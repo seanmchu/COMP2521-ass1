@@ -6,13 +6,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctype.h>
-//HELPER FUNCTIONS
-static InvertedIndexBST newInode(char *word);
-static FileList newFnode (char *filename);
-static InvertedIndexBST insert(InvertedIndexBST t, char *word);
-static int alphacmp(char *w1, char *w2);
-
-
 //Gameplan (Part 1):
 //Check through all files, normalising all words in the read process.
 //Form IIBST
@@ -44,10 +37,16 @@ char *normaliseWord(char *str){
 }
 
 //A tree ordered alphabetically lol
+//First- open the file of files
+//Next- for every file in the file of files, insert a new node for every word (will be fixed for doubles)
+//Then -scan through to generate fl nodes and their tf's, then insert into the fl alphabetically. (for each IIBST node)
+//Then return.
+//Do as much as possible recursively as to avoid time complexity.
 InvertedIndexBST generateInvertedIndex(char *collectionFilename){
-    FILE f = fopen(collectionFilename, "r");
+    FILE *f = fopen(collectionFilename, "r");
     if (!f) return NULL; //fopen fails
-    
+    return NULL;
+
 }
 //Traverse the tree via infix order and print
 void printInvertedIndex(InvertedIndexBST tree) {
@@ -55,58 +54,8 @@ void printInvertedIndex(InvertedIndexBST tree) {
     return;
 }
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord, int D) {
-    return;
+    return NULL;
 }
 TfIdfList retrieve(InvertedIndexBST tree, char *searchWords[], int D) {
-    return;
-}
-
-//HELPER FUNCTIONS
-
-//makes a new IIBST node
-static InvertedIndexBST newInode(char *word) {
-    InvertedIndexBST b = malloc (sizeof(struct InvertedIndexNode));
-    b->word = word;
-    b->fileList = NULL;
-    b->left = NULL;
-    b->right = NULL;
-    return b;
-}
-
-//makes a new FL node
-static FileList newFnode (char *filename) {
-    FileList n = malloc (sizeof(struct( FileListNode)));
-    n->filename = filename;
-    n->tf = 0;
-    n->next = NULL;
-    return n;
-}
-
-static InvertedIndexBST insert(InvertedIndexBST t, char *word) {
-    if (t == NULL) return newInode(word); //empty :)
-    //we don't want doubles of the word in the IISBST
-    else if (strcmp(t->word,word){ //the words aren't equal
-        if (alphacmp(t->word,word) > 0) insert(t->left,word);
-        else if (alphacmp(t->word,word) < 0) insert (t->right,word);
-    } else {//word is already in use
-        return t;
-    }
-}
-
-//Compares two words alphabetically, returns -1 if w1 is before w2, 0 if equal, 1 if w1 is after w2
-static int alphacmp(char *w1, char*w2) {
-    if (!strcmp(w1,w2)) return 0;
-    int w1after = -1;
-    for (int i = 0; i < strlen(w1); i++) {
-        if (w1[i] > w2[i]){
-            w1after = 1;
-            break;
-        }
-        if (i == strlen(w2) - 1) {
-            w1after = 1;
-            break;
-        } 
-    }
-    return w1after;
-
+    return NULL;
 }
