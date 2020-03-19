@@ -1,4 +1,5 @@
 #include"FileListNode.h"
+#include"helper.h"
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
@@ -12,15 +13,28 @@ FileList newFnode (char *filename) {
     return n;
 }
 
+//Inserts a node at the correct position alphabetically in the list, returns the head of the list.
 FileList insertFnode(FileList n,char *filename) {
     //if FL is empty, make new head
+    FileList nn = newFnode(filename);
     if (!n) {
-        FileList nn = newFnode(filename);
         return nn;
     }
-    else {
-        FileList nn = newFnode(filename);
-        n->next = nn;
-        return n;
+    //Otherwise, we insert alphabetically
+    FileList curr = n;
+    while (curr) { //Move to alphabetically correct spot
+        if (alphacmp(filename,curr->filename) > 0) {
+                curr = curr->next;
+        } else {
+            break;
+        }
     }
+    if (curr->next) { //If we aren't at the end of the list (found alphabetical spot)
+        nn->next = curr->next;
+        curr->next = nn;
+        return n;
+    } else { //If we reached the end of the list
+        curr->next = nn;
+        return n;
+    }   
 }

@@ -4,3 +4,5 @@
 InvertedIndexBST newInode(char *word);
 //Creates and inserts a new IIBST node sorted alphabetically
 InvertedIndexBST insertInode(InvertedIndexBST t, char *word);
+//Reads across a list of files and creates a tree based on the words.
+InvertedIndexBST readFL(FileList fl);
