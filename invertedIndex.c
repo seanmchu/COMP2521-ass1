@@ -2,10 +2,16 @@
 //Written by Sean Morota Chu (z5259673), started 19/03/2020 - completed xx/03/2020
 //#INCLUDES
 #include"invertedIndex.h"
+#include"InvertedIndexBST.h"
+#include"FileListNode.h"
+#include"Tfidf.h"
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
 #include<ctype.h>
+
+//#DEFINES
+#define MAXWORDLENGTH 20
 //Gameplan (Part 1):
 //Check through all files, normalising all words in the read process.
 //Form IIBST
@@ -43,8 +49,24 @@ char *normaliseWord(char *str){
 //Then return.
 //Do as much as possible recursively as to avoid time complexity.
 InvertedIndexBST generateInvertedIndex(char *collectionFilename){
-    FILE *f = fopen(collectionFilename, "r");
-    if (!f) return NULL; //fopen fails
+    FILE *fp = fopen(collectionFilename, "r");
+    if (!fp) return NULL; //fopen fails
+    char filename[MAXWORDLENGTH];
+    FileList fl = NULL;
+    while(fp) { //while the pointer isn't NULL, create a File List with all file names
+        fscanf(fp,"%s",filename);
+        insertFnode(fl,filename);
+    }
+    //now, we open the files, and create IIBST nodes based on the words within them.
+    IIBST t = NULL;
+    for (FileList n = fl; n; n = n->next) {
+        FILE *fp2 = fopen(n->filename,"r");
+        if (!fp2) { //if the requested file doesn't exist
+            fprintf(stderr,"file %s not found",n->filename)
+            exit(1);    
+        }
+        
+    }
     return NULL;
 
 }

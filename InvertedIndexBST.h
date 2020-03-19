@@ -3,4 +3,4 @@
 //Creates a new IIBST node
 InvertedIndexBST newInode(char *word);
 //Creates and inserts a new IIBST node sorted alphabetically
-InvertedIndexBST insert(InvertedIndexBST t, char *word);
+InvertedIndexBST insertInode(InvertedIndexBST t, char *word);

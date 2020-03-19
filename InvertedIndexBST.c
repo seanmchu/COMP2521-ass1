@@ -6,15 +6,14 @@
 static int alphacmp(char *w1, char *w2);
 
 //Creates and inserts a new IIBST node into the tree.
-InvertedIndexBST insert(InvertedIndexBST t, char *word) {
+InvertedIndexBST insertInode(InvertedIndexBST t, char *word) {
     if (t == NULL) return newInode(word); //empty :)
     //we don't want doubles of the word in the IISBST
     else if (strcmp(t->word,word)){ //the words aren't equal
-        if (alphacmp(t->word,word) > 0) insert(t->left,word);
-        else if (alphacmp(t->word,word) < 0) insert (t->right,word);
-    } else {//word is already in use
-        return t;
+        if (alphacmp(t->word,word) > 0) t->left = insertInode(t->left,word);
+        else if (alphacmp(t->word,word) < 0) t->right = insertInode (t->right,word);
     }
+    return t;
 }
 
 //Compares two words alphabetically, returns -1 if w1 is before w2, 0 if equal, 1 if w1 is after w2

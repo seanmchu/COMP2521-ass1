@@ -11,3 +11,16 @@ FileList newFnode (char *filename) {
     n->next = NULL;
     return n;
 }
+
+FileList insertFnode(FileList n,char *filename) {
+    //if FL is empty, make new head
+    if (!n) {
+        FileList nn = newFnode(filename);
+        return nn;
+    }
+    else {
+        FileList nn = newFnode(filename);
+        n->next = nn;
+        return n;
+    }
+}
