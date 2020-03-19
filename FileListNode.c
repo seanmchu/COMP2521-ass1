@@ -14,14 +14,16 @@ FileList newFnode (char *filename) {
 }
 
 //Inserts a node at the correct position alphabetically in the list, returns the head of the list.
-FileList insertFnode(FileList n,char *filename) {
+void insertFnode(flhead n,char *filename) {
     //if FL is empty, make new head
     FileList nn = newFnode(filename);
-    if (!n) {
-        return nn;
+    if (!n->head) {
+        printf("added %s to the list VIA HEAD\n",filename);
+        n->head = nn;
+        n->curr = nn;
     }
     //Otherwise, we insert alphabetically
-    FileList curr = n;
+    FileList curr = n->curr;
     while (curr) { //Move to alphabetically correct spot
         if (alphacmp(filename,curr->filename) > 0) {
                 curr = curr->next;
@@ -32,9 +34,9 @@ FileList insertFnode(FileList n,char *filename) {
     if (curr->next) { //If we aren't at the end of the list (found alphabetical spot)
         nn->next = curr->next;
         curr->next = nn;
-        return n;
+        printf("added %s to the list, %s is head\n",curr->filename,n->head->filename);
     } else { //If we reached the end of the list
         curr->next = nn;
-        return n;
+        printf("added %s to the list, %s is head\n",curr->filename,n->head->filename);
     }   
 }

@@ -43,7 +43,7 @@ char *normaliseWord(char *str){
         i--;
     }
     //make everything lowercase
-    for (int i = 0; i < strlen(str); i++) str[i] = tolower(str[i]);
+    for (int j = 0; j < strlen(str); j++) str[j] = tolower(str[j]);
     //Replace punctuation mark at the end of the word with a null byte
     char *last = strchr(str,'\0');
     last--;
@@ -60,22 +60,28 @@ char *normaliseWord(char *str){
 InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     FILE *collection = fopen(collectionFilename,"r");
     //now, for each file here, we add it to a FileList
-    FileList fl = NULL;
+    flhead fl = malloc(sizeof(flhead));
     char filename[MAXWORDLENGTH];
-    while (fscanf(collection,"%s",filename)) {
+    fscanf(collection,"%s",filename);
+    //CURRENTLY STUCK IN THIS WHILE LOOP FOREVER D:
+    //ALSO, FOR SOME REASON THE CUR
+    while (collection) {
         insertFnode(fl,filename);
+        if (fscanf(collection,"%s",filename) == EOF) break;
     }
-    //Now, we have a list of files we need to read to generate the IIBST
-    //for each word, we need an IIBST node and a FileList.
-    //We first generate the IIBST nodes, then for each node, we generate the corresponding FL.
-    InvertedIndexBST t = generateEmptyBST(fl);
-    populateBST(t,fl);
+    printf("hello");
+    if (!fl->head) printf("empty file list\n");
+    //Create BST without FileList nodes
+    InvertedIndexBST t = generateEmptyBST(fl->head);
+    //Populate BST with File List nodes
+    populateBST(t,fl->head);
     return t;
 }
 //Traverse the tree via infix order and print
 void printInvertedIndex(InvertedIndexBST tree) {
     FILE *fp = fopen("invertedIndex.txt","a");
     if (tree == NULL) {
+        perror("tree is empty");
         return;
     }
     printInvertedIndex(tree->left);
@@ -99,14 +105,18 @@ TfIdfList retrieve(InvertedIndexBST tree, char *searchWords[], int D) {
 //Generates an IIBST with Filelist values set to NULL
 InvertedIndexBST generateEmptyBST(FileList fl) {
     InvertedIndexBST t = NULL;
-    char *str = malloc (sizeof(char) * MAXWORDLENGTH);
-    for (FILE *fp; fp = fopen(fl->filename,"r"); fl = fl->next) { //for each file
+    if (!fl) printf("empty file list\n");
+    for (FILE *fp;fl != NULL && (fp = fopen(fl->filename,"r")); fl = fl->next) { //for each file
+        char *str = malloc (sizeof(char) * MAXWORDLENGTH);
         while (fscanf(fp,"%s",str)) { //for every word (str)
+            
             strcpy(str,normaliseWord(str));
             t = insertInode(t,str); //won't make doubles, always returns root of tree
+            
         }
+        free(str);
     }
-    free(str);
+    if (!t) perror("failed to generate empty tree");
     return t;
 }
 
@@ -116,14 +126,14 @@ void populateBST(InvertedIndexBST t, FileList fl) {
     //We will traverse in infix order by default.
     if (t == NULL) return;
     populateBST(t->left,fl);
-    FileList ff = NULL;
+    flhead ff = malloc(sizeof(flhead));
     while (fl) { // generate the fl for the given word
         if (getTf(fl->filename,t->word)) { //if the term frequency is not 0
             insertFnode(ff,fl->filename);
         }
         fl = fl->next;
     }
-    t->fileList = ff;
+    t->fileList = ff->head;
     populateBST(t->right,fl);
 }
 
