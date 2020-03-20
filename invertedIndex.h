@@ -75,4 +75,3 @@ TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord, int D);
 TfIdfList retrieve(InvertedIndexBST tree, char *searchWords[], int D);
 
 #endif
-

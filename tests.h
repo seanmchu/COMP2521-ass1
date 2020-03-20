@@ -1,0 +1,11 @@
+void run_tests();
+static void test_alphacmp();
+static void test_insertInode();
+static void test_newInode();
+static void test_insertFnode();
+static void test_newFnode();
+static void test_newFL();
+static void test_gen_read_fl();
+static void test_getTf();
+static void test_generateEmptyBST();
+static void test_populateBST();
