@@ -21,7 +21,6 @@ flhead newFL() {
     return f;
 }
 
-//Inserts a node at the correct position alphabetically in the list, returns the head of the list.
 void insertFnode(flhead n,char *filename,double tf) {
     FileList nn = newFnode(filename);
     nn->tf = tf;

@@ -3,7 +3,6 @@
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
-//Compares two words alphabetically, returns -1 if w1 is before w2, 0 if equal, 1 if w1 is after w2
 int alphacmp(char *w1, char*w2) {
     if (!strcmp(w1,w2)){
         return 0;
@@ -20,7 +19,6 @@ int alphacmp(char *w1, char*w2) {
     return w1after;
 }
 
-//Calculates and returns the Term frequency of a given file
 double getTf(char *filename, char *word) {
     double tf = 0;
     double words_found = 0;

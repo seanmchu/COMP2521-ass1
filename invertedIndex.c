@@ -13,9 +13,13 @@
 #include<assert.h>
 //HELPERS
 //Generates a BST without filelists.
-InvertedIndexBST generateEmptyBST(flhead f);
+static InvertedIndexBST generateEmptyBST(flhead f);
 //Populates a BST's fileList Nodes with the FileList nodes.
-void populateBST(InvertedIndexBST t, flhead f);
+static void populateBST(InvertedIndexBST t, flhead f);
+//Prints the BST into the named file pointer
+//This is a separate function from PrintInvertedIndex so I don't 
+//      have to reopen the file pointer each time I recurse
+static void InvertedIndexPrint(InvertedIndexBST tree,FILE *fp);
 
 //Gameplan (Part 1):
 //Check through all files, normalising all words in the read process.
@@ -41,39 +45,26 @@ char *normaliseWord(char *str){
     return str;
 }
 
-//A tree ordered alphabetically lol
-//First- open the file of files
-//Next- for every file in the file of files, insert a new node for every word (will be fixed for doubles)
-//Then -scan through to generate fl nodes and their tf's, then insert into the fl alphabetically. (for each IIBST node)
-//Then return.
-//Do as much as possible recursively as to avoid time complexity.
+//Generate an invertedIndex BST, alphabetically ordered by word. [DONE]
 InvertedIndexBST generateInvertedIndex(char *collectionFilename){
     //Generate list of files in collection file
-    printf("Generating fileList\n");
     flhead f = gen_read_fl(collectionFilename);
     //make a BST out of it
-    printf("Generating BST\n");
     InvertedIndexBST t = generateEmptyBST(f);
-    printf("Populating BST\n");
+    //Populate the BST with filelists
     populateBST(t,f);
+    //Return generated tree
     return t;
 }
-//Traverse the tree via infix order and print
+
+//Traverse the tree via infix order and print tree word and filenames [DONE]
 void printInvertedIndex(InvertedIndexBST tree) {
-    /*FILE *fp = fopen("invertedIndex.txt","a");
-    if (tree == NULL) {
-        perror("tree is empty");
-        return;
-    }
-    printInvertedIndex(tree->left);
-    fprintf(fp,"%s ",tree->word);
-    FileList fl = tree->fileList;
-    while (fl != NULL) {
-        fprintf(fp,"%s ",fl->filename);
-        fl = fl->next;
-    }
-    printInvertedIndex(tree->right);
-    */
+    if (tree == NULL) perror("empty tree provided");
+    FILE *fp = fopen("invertedIndex.txt","w");
+    if (!fp) perror("fopen failed");
+    InvertedIndexPrint(tree,fp);
+    fclose(fp);
+    
 }
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord, int D) {
     return NULL;
@@ -84,7 +75,7 @@ TfIdfList retrieve(InvertedIndexBST tree, char *searchWords[], int D) {
 
 //Helper functions
 
-InvertedIndexBST generateEmptyBST(flhead f) {
+static InvertedIndexBST generateEmptyBST(flhead f) {
     f->curr = f->head;
     InvertedIndexBST t = NULL;
     //Open all files in filelist
@@ -95,34 +86,49 @@ InvertedIndexBST generateEmptyBST(flhead f) {
         //If a word is already in the tree, nothing will happen
         while(fscanf(fp,"%s",str) != EOF) {
             t = insertInode(t,str);
-            printf("%s has become %s\n",str,t->word);
             str = malloc(sizeof(char) * MAXWORDLENGTH);
         }
         f->curr = f->curr->next;
     }
     f->curr = f->head;
-    if (t == NULL) {
-        printf("Empty tree\n");
-    }
-    else printf("%s\n",t->word);
     return t;
 }
 
 //Populates a BST's fileList Nodes with the FileList nodes.
-void populateBST(InvertedIndexBST t, flhead f) {
+static void populateBST(InvertedIndexBST t, flhead f) {
     //Traverse infix order
     if (t == NULL) return;
+    //if (t->left != NULL) printf("Current node %s, moving left to %s\n",t->word,t->left->word);
     populateBST(t->left,f);
     flhead ff = newFL();
     f->curr = f->head;
     double tf = 0;
+    //Look through the entire filelist and generate tf for each, then add to node if tf > 0
     while(f->curr != NULL) {
         tf = getTf(f->curr->filename,t->word);
         if (tf != 0) {
+            //printf("Inserting file %s for node %s with %f frequency\n",f->curr->filename,t->word,tf);
             insertFnode(ff,f->curr->filename,tf);
         }
         f->curr = f->curr->next;
     }
     t->fileList = ff->head;
+    
+    /*if (t->right != NULL) printf("Current node :%s, moving right to %s\n",t->word,t->right->word);
+    else printf("Reached end of right at %s\n",t->word);
+    */
     populateBST(t->right,f);
+}
+
+static void InvertedIndexPrint(InvertedIndexBST tree,FILE *fp) {
+    if (tree == NULL) return;
+    InvertedIndexPrint(tree->left,fp);
+    fprintf(fp,"%s ",tree->word);
+    FileList fl = tree->fileList;
+    while (fl != NULL) {
+        fprintf(fp,"%s ",fl->filename);
+        fl = fl->next;
+    }
+    fprintf(fp,"\n");
+    InvertedIndexPrint(tree->right,fp);
 }

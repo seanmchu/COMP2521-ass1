@@ -13,11 +13,14 @@ void main(){
 }
 
 
-void run_tests(){
+static void run_tests(){
     printf("Running tests\n");
     printf("Running alphacmp tests\n");
     test_alphacmp();
     printf("alphacmp tests successful\n");   
+    printf("Running normalise tests\n");
+    test_normalise();
+    printf("normalise tests done\n");
     printf("Running newInode tests\n");
     test_newInode();
     printf("newInode tests done\n");
@@ -48,6 +51,12 @@ static void test_alphacmp(){
     assert(alphacmp("aaaa","baa") == -1);
     assert(alphacmp("planets","mixed") == 1);
 }
+static void test_normalise() {
+    char *str = malloc(sizeof(char)*100);
+    strcpy(str,"    Hello?    ");
+    str = normaliseWord(str);
+    assert(!strcmp("hello",str));
+}
 
 static void test_newInode(){
     InvertedIndexBST b = newInode("hello");
@@ -65,7 +74,6 @@ static void test_newInode(){
 static void test_insertInode() {
     InvertedIndexBST root = NULL;
     root = insertInode(root,"Hello");
-    //printf("root is %s\n",root->word);
     assert (!strcmp(root->word,"hello"));
     root = insertInode(root,"helloo");
     root = insertInode(root,"hello");
@@ -87,6 +95,7 @@ static void test_insertInode() {
     root2 = insertInode(root2,"been");
     root2 = insertInode(root2,"the");
     assert(!strcmp(root2->word,"mars"));
+
 }
 
 
@@ -127,9 +136,4 @@ static void test_gen_read_fl() {
     f->curr = f->head;
     assert(!strcmp(f->head->filename,"file11.txt"));
     assert(!strcmp(f->head->next->filename,"file21.txt"));
-}
-static void test_generateEmptyBST(){
-}
-static void test_populateBST(){
-
 }
