@@ -32,7 +32,7 @@ void printTfIdfList(char *filename, TfIdfList list){
 
 	TfIdfList cur = list;
 	while(cur != NULL) {
-		fprintf(fp, "%.6f  %s\n",  cur->tfidf_sum, cur->filename );
+		fprintf(fp, "%.6f  %s\n",  cur->tfIdfSum, cur->filename );
 		cur = cur->next;
 	}
 	fclose(fp);
