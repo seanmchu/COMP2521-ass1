@@ -1,8 +1,10 @@
 #include"helper.h"
 #include"invertedIndex.h"
+#include<math.h>
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
+
 int alphacmp(char *w1, char*w2) {
     if (!strcmp(w1,w2)){
         return 0;
@@ -36,4 +38,14 @@ double getTf(char *filename, char *word) {
     }
     if (total_words != 0) tf = words_found/total_words;
     return tf;
+}
+
+int listSize(FileList f) {
+    int size = 0;
+    for (FileList curr = f; curr != NULL; curr = curr->next) size++;
+    return size;
+}
+
+double getIDF(int total_documents,int relevant_documents) { 
+    return log10((double)total_documents/relevant_documents);
 }

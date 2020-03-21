@@ -6,11 +6,9 @@ struct FileListRep {
 };
 typedef struct FileListRep *flhead;
 
-//makes a new file list node
-FileList newFnode (char *filename);
 //Creates an empty file list
 flhead newFL();
-//Insert a new Fnode at end of FL, returns head of list (assuming head input)
+//Creates and inserts an Fnode into a file list
 void insertFnode(flhead n, char*filename,double tf);
 //Generates a file list from the collection file
 flhead gen_read_fl(char *collectionFilename);

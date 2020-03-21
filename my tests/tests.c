@@ -3,13 +3,15 @@
 #include"helper.h"
 #include"InvertedIndexBST.h"
 #include"FileListNode.h"
+#include"Tfidf.h"
 #include<stdio.h>
 #include<assert.h>
 #include<string.h>
 #include<stdlib.h>
 //Test functions not tested in given test file
-void main(){
+int main(void){
     run_tests();
+    return 0;
 }
 
 
@@ -39,7 +41,16 @@ static void run_tests(){
     printf("Running gen_read_fl tests\n");
     test_gen_read_fl();
     printf("gen_read_fl tests done\n");
-    printf("Tests done\n");
+    printf("Running newTnode tests\n");
+    test_newTnode();
+    printf("newTnode tests done\n");    
+    printf("Running newTL tests\n");
+    test_newTL();
+    printf("newTL tests done\n");
+    printf("Running insertTnode tests\n");
+    test_insertTnode();
+    printf("insertTnode tests done\n");
+    printf("All tests done\n");
 
 }
 
@@ -95,7 +106,6 @@ static void test_insertInode() {
     root2 = insertInode(root2,"been");
     root2 = insertInode(root2,"the");
     assert(!strcmp(root2->word,"mars"));
-
 }
 
 
@@ -136,4 +146,38 @@ static void test_gen_read_fl() {
     f->curr = f->head;
     assert(!strcmp(f->head->filename,"file11.txt"));
     assert(!strcmp(f->head->next->filename,"file21.txt"));
+}
+
+static void test_newTnode(){
+    TfIdfList new_node = newTnode("hello.txt",0.42);
+    assert(!strcmp(new_node->filename,"hello.txt"));
+    assert(new_node->tfIdfSum == 0.42);
+    free(new_node);
+}
+static void test_newTL(){
+    tflist t = newTL();
+    TfIdfList new_node = newTnode("hello.txt",0.42);
+    TfIdfList new_node2 = newTnode("hello2.txt",0.31);
+    t->head = new_node;
+    t->curr = new_node2;
+    new_node->next = new_node2;
+    assert(t->head->tfIdfSum == 0.42);
+    assert(t->curr->tfIdfSum == 0.31);
+}
+
+static void test_insertTnode(){
+    tflist t = newTL();
+    insertTnode(t,"hello.txt",0.42);
+    assert(t->head->tfIdfSum == 0.42);
+    insertTnode(t,"hella.txt",0.42);
+    assert(!strcmp(t->head->filename,"hella.txt"));
+    assert(!strcmp(t->head->next->filename,"hello.txt"));
+    insertTnode(t,"hello2.txt",0.42);
+    assert(!strcmp(t->head->next->next->filename,"hello2.txt"));
+    insertTnode(t,"hello3.txt",0.45);
+    assert(!strcmp(t->head->filename,"hello3.txt"));
+    insertTnode(t,"hello4.txt",0.39);
+    assert(!strcmp(t->head->next->next->next->next->filename,"hello4.txt"));
+    insertTnode(t,"hello5.txt",0.4);
+    assert(!strcmp(t->head->next->next->next->next->filename,"hello5.txt"));
 }

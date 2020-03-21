@@ -3,7 +3,8 @@
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
-
+//makes a new file list node
+static FileList newFnode (char *filename);
 
 FileList newFnode (char *filename) {
     if (filename == NULL) return NULL;
@@ -37,9 +38,7 @@ void insertFnode(flhead n,char *filename,double tf) {
         FileList curr = n->head;
         while(curr->next != NULL) {
             //prevent making doubles
-            if (!strcmp(filename,curr->filename)) {
-                return;
-            }
+            if (!strcmp(filename,curr->filename)) return;
             if (alphacmp(filename,curr->filename) == 1 && alphacmp(filename,curr->next->filename) == - 1){
                 nn->next = curr->next;
                 curr->next = nn;

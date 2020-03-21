@@ -3,6 +3,8 @@
 #include<string.h>
 #include<stdio.h>
 #include<stdlib.h>
+//Creates a new IIBST node with the word normalised :)
+static InvertedIndexBST newInode(char *word);
 //Creates and inserts a new IIBST node into the tree.
 InvertedIndexBST insertInode(InvertedIndexBST t, char *word) {
     if (t == NULL) return newInode(word); //empty :)
@@ -18,7 +20,7 @@ InvertedIndexBST insertInode(InvertedIndexBST t, char *word) {
 
 
 //makes a new IIBST node
-InvertedIndexBST newInode(char *word) {
+static InvertedIndexBST newInode(char *word) {
     InvertedIndexBST b = malloc (sizeof(struct InvertedIndexNode));
     char *str = malloc(sizeof(char) * 100);
     strcpy(str,word);

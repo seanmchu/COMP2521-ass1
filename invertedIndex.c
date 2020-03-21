@@ -11,6 +11,7 @@
 #include<stdlib.h>
 #include<ctype.h>
 #include<assert.h>
+#include<math.h>
 //HELPERS
 //Generates a BST without filelists.
 static InvertedIndexBST generateEmptyBST(flhead f);
@@ -20,6 +21,8 @@ static void populateBST(InvertedIndexBST t, flhead f);
 //This is a separate function from PrintInvertedIndex so I don't 
 //      have to reopen the file pointer each time I recurse
 static void InvertedIndexPrint(InvertedIndexBST tree,FILE *fp);
+//Returns the fileList(head node) of a given word from the BST
+static FileList getList (InvertedIndexBST t,char *word);
 
 //Gameplan (Part 1):
 //Check through all files, normalising all words in the read process.
@@ -66,11 +69,26 @@ void printInvertedIndex(InvertedIndexBST tree) {
     fclose(fp);
     
 }
+
+//Just calculate the tfidf of a word, add to list and return it [DONE]
 TfIdfList calculateTfIdf(InvertedIndexBST tree, char *searchWord, int D) {
-    return NULL;
+    //first, retreive the fileList from the IIBST
+    FileList search_list = getList(tree,searchWord);
+    if (search_list == NULL) return NULL;
+    return getTfIdf(search_list,D);
 }
+
 TfIdfList retrieve(InvertedIndexBST tree, char *searchWords[], int D) {
-    return NULL;
+    FileList search_list = NULL;
+    tflist return_list = newTL();
+    for (int i = 0; searchWords[i] != NULL; i++) {
+        search_list = getList(tree,searchWords[i]);
+        int list_size = listSize(search_list);
+        double idf = getIDF(D,list_size);
+        for (FileList curr = search_list;curr != NULL;curr = curr->next)
+            insertTnode(return_list,curr->filename,idf * curr->tf);
+    }
+    return return_list->head;
 }
 
 //Helper functions
@@ -131,4 +149,15 @@ static void InvertedIndexPrint(InvertedIndexBST tree,FILE *fp) {
     }
     fprintf(fp,"\n");
     InvertedIndexPrint(tree->right,fp);
+}
+
+static FileList getList (InvertedIndexBST t,char *word) {
+    //traverse infix and return filelist of the given word.
+    if (t == NULL) return NULL;
+    if (!strcmp(t->word,word)) return t->fileList;
+    FileList left = getList(t->left,word);
+    FileList right = getList(t->right,word);
+    if(left != NULL) return left;
+    if (right != NULL) return right;
+    else return NULL;
 }
